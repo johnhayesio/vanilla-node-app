@@ -6,6 +6,7 @@
 // Import dependencies
 const http = require("http");
 const url = require("url");
+const config = require("./config");
 const StringDecoder = require("string_decoder").StringDecoder;
 
 // Respond to requests with a string
@@ -77,8 +78,10 @@ const server = http.createServer((req, res) => {
 });
 
 // Initialize server
-server.listen(3000, () =>
-  console.log("[server]: running at http://localhost:3000")
+server.listen(config.PORT, () =>
+  console.log(
+    `[server]: running in ${config.ENV_NAME} mode at http://localhost:${config.PORT}`
+  )
 );
 
 // Define handlers
