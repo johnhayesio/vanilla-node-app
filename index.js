@@ -22,9 +22,18 @@ const server = http.createServer((req, res) => {
   // Set HTTP method variable
   const method = req.method;
 
+  // Set headers variable as an object
+  const headers = req.headers;
+
   // Send server response
   res.end("Hello World!\n");
 
+  // Log headers
+  console.log(
+    `Request received with these headers: ${JSON.stringify(headers)}`
+  );
+
+  // Log path, method, and queries
   console.log(
     `Request received on path ${trimmedPath} with method ${method} and these query parameters ${JSON.stringify(
       queryStringObject
