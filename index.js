@@ -5,19 +5,38 @@
 
 // Import dependencies
 const http = require("http");
+const https = require("https");
 const url = require("url");
 const config = require("./config");
+const fs = require("fs");
 const StringDecoder = require("string_decoder").StringDecoder;
 
 // Instantiate HTTP server
-const server = http.createServer((req, res) => {
+const httpServer = http.createServer((req, res) => {
   unifiedServer(req, res);
 });
 
-// Initialize server
-server.listen(config.HTTP_PORT, () =>
+// Start HTTP server
+httpServer.listen(config.HTTP_PORT, () =>
   console.log(
     `[server]: running in ${config.ENV_NAME} mode at http://localhost:${config.HTTP_PORT}`
+  )
+);
+
+// Instantiate HTTPS server
+const httpsServerOptions = {
+  key: fs.readFileSync("./https/key.pem"),
+  cert: fs.readFileSync("./https/cert.pem"),
+};
+
+const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
+  unifiedServer(req, res);
+});
+
+// Start HTTPS server
+httpsServer.listen(config.HTTPS_PORT, () =>
+  console.log(
+    `[server]: running in ${config.ENV_NAME} mode at https://localhost:${config.HTTPS_PORT}`
   )
 );
 
