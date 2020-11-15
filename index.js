@@ -30,30 +30,48 @@ const server = http.createServer((req, res) => {
   const decoder = new StringDecoder("utf-8");
   let buffer = "";
 
+  // Decode stream and write to buffer variable
   req.on("data", (data) => {
     buffer += decoder.write(data);
   });
 
+  // Return response when stream ends
   req.on("end", () => {
     buffer += decoder.end();
 
-    // Send server response
-    res.end("Hello World!\n");
+    // Choose handler request, otherwise use notFound handler
+    const chooseHandler =
+      typeof router[trimmedPath] !== "undefined"
+        ? router[trimmedPath]
+        : handlers.notFound;
 
-    // Log headers
-    console.log(
-      `Request received with these headers: ${JSON.stringify(headers)}`
-    );
+    // Construct data object for handler
+    const data = {
+      trimmedPath,
+      queryStringObject,
+      method,
+      headers,
+      payload: buffer,
+    };
 
-    // Log path, method, and queries
-    console.log(
-      `Request received on path ${trimmedPath} with method ${method} and these query parameters ${JSON.stringify(
-        queryStringObject
-      )}`
-    );
+    // Route request to specified handler in router
+    chooseHandler(data, (statusCode, payload) => {
+      // Use handler callback status code, otherwise default to 200
+      statusCode = typeof statusCode == "number" ? statusCode : 200;
 
-    // Log payload
-    console.log(`Request received with this payload: ${buffer}`);
+      // Use handler callback payload, otherwise default to {}
+      payload = typeof payload == "object" ? payload : {};
+
+      // Convert payload to a string
+      const payloadString = JSON.stringify(payload);
+
+      // Return response
+      res.writeHead(statusCode);
+      res.end(payloadString);
+
+      // Log response
+      console.log(`Response: ${statusCode}, ${payloadString}`);
+    });
   });
 });
 
@@ -61,3 +79,22 @@ const server = http.createServer((req, res) => {
 server.listen(3000, () =>
   console.log("[server]: running at http://localhost:3000")
 );
+
+// Define handlers
+const handlers = {};
+
+// Sample handler
+handlers.sample = (data, callback) => {
+  // Callback an HTTP status code and a payload object
+  callback(406, { name: "Sample Handler" });
+};
+
+// Not found handler
+handlers.notFound = (data, callback) => {
+  callback(404);
+};
+
+// Define request router
+const router = {
+  sample: handlers.sample,
+};
