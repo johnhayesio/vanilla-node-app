@@ -11,3 +11,16 @@ Execute app entry point (index.js) using NODE_ENV set to development or producti
 ```bash
 NODE_ENV=development node index.js
 ```
+
+## HTTPS protocol usage
+
+In order to use the HTTPS protocol, a key and certificate must be created in a folder named https:
+
+```bash
+mkdir -p https
+cd https
+
+openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
+```
+
+![Key/Cert Creation](./assets/https_setup.gif)
