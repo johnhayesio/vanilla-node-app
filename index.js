@@ -9,8 +9,20 @@ const url = require("url");
 const config = require("./config");
 const StringDecoder = require("string_decoder").StringDecoder;
 
-// Respond to requests with a string
+// Instantiate HTTP server
 const server = http.createServer((req, res) => {
+  unifiedServer(req, res);
+});
+
+// Initialize server
+server.listen(config.HTTP_PORT, () =>
+  console.log(
+    `[server]: running in ${config.ENV_NAME} mode at http://localhost:${config.HTTP_PORT}`
+  )
+);
+
+// HTTP and HTTP server logic
+const unifiedServer = (req, res) => {
   // Parse incoming URL
   const parseUrl = url.parse(req.url, true);
 
@@ -75,14 +87,7 @@ const server = http.createServer((req, res) => {
       console.log(`Response: ${statusCode}, ${payloadString}`);
     });
   });
-});
-
-// Initialize server
-server.listen(config.PORT, () =>
-  console.log(
-    `[server]: running in ${config.ENV_NAME} mode at http://localhost:${config.PORT}`
-  )
-);
+};
 
 // Define handlers
 const handlers = {};
