@@ -16,13 +16,20 @@ const server = http.createServer((req, res) => {
   const path = parseUrl.pathname;
   const trimmedPath = path.replace(/^\/+|\/+$/g, "");
 
+  // Set query variable with query string as an object
+  const queryStringObject = parseUrl.query;
+
   // Set HTTP method variable
   const method = req.method;
 
   // Send server response
   res.end("Hello World!\n");
 
-  console.log(`Request received on path ${trimmedPath} with method ${method}`);
+  console.log(
+    `Request received on path ${trimmedPath} with method ${method} and these query parameters ${JSON.stringify(
+      queryStringObject
+    )}`
+  );
 });
 
 // Initialize server
