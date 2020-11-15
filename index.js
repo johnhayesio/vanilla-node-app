@@ -39,7 +39,7 @@ const server = http.createServer((req, res) => {
   req.on("end", () => {
     buffer += decoder.end();
 
-    // Choose handler request, otherwise use notFound handler
+    // Choose request handler, otherwise use notFound handler
     const chooseHandler =
       typeof router[trimmedPath] !== "undefined"
         ? router[trimmedPath]
