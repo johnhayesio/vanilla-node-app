@@ -91,6 +91,7 @@ handlers.sample = (data, callback) => {
 
 // Not found handler
 handlers.notFound = (data, callback) => {
+  // Callback and HTTP status code of 404 if not found
   callback(404);
 };
 
